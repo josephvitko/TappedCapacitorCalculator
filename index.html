@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tapped Capacitor Calculator</title>
+    <script>
+      function calculateResult() {
+        var f_o = parseFloat(document.getElementById('f_o').value) || 0;
+        var bandwidth = parseFloat(document.getElementById('bandwidth').value) || 0;
+        var r_t = parseFloat(document.getElementById('r_t').value) || 0;
+        var r_2 = parseFloat(document.getElementById('r_2').value) || 0;
+        
+        f_o *= 1000
+        bandwidth *= 1000
+        r_t *= 1000
+        r_2 *= 1000
+
+        // Calculation logic
+        let qt = f_o / bandwidth;
+        let c = 1 / (2 * Math.PI * bandwidth * r_t);
+        console.log(`c: ${c}`);
+        let W_o = 2 * Math.PI * f_o;
+        console.log(`W_o: ${W_o}`);
+        let L = 1 / (W_o ** 2 * c);
+        console.log(`L: ${L}`);
+        let N = Math.sqrt(r_t / r_2);
+        console.log(`N: ${N}`);
+        let qp = qt / N; // Assuming N is the correct divisor here
+        console.log(`qp: ${qp}`);
+
+        if (qp <= 10) {
+          qp = Math.sqrt(qt ** 2 / N ** 2);
+        }
+
+        let c2 = qp / (W_o * r_2);
+
+        let cse = (c2 * (1 + qp ** 2)) / qp ** 2;
+
+        let c1 = (cse * c) / (cse - c);
+
+        // Displaying results
+        document.getElementById('result_qt').textContent = `${qt.toFixed(2)}`;
+        document.getElementById('result_l').textContent = `${(L * 10 ** 6).toFixed(2)} uH`;
+        document.getElementById('result_c1').textContent = `${(c1 * 10 ** 12).toFixed(2)} pF`;
+        document.getElementById('result_c2').textContent = `${(c2 * 10 ** 12).toFixed(2)} pF`;
+      }
+
+    </script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 30px auto;
+        padding: 20px;
+        background: white;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        text-align: center;
+        color: #4A90E2;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #4A90E2;
+      }
+
+      .input-group label {
+        margin-bottom: 0.5em;
+        color: #666;
+      }
+
+      .input-group input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 1em;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+        /* Added for proper sizing */
+      }
+
+      .input-group input:focus {
+        border-color: #4A90E2;
+        box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+        outline: none;
+      }
+
+      button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background: #4A90E2;
+        color: white;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+
+      button:hover {
+        background: #357ABD;
+      }
+
+      #result {
+        background-color: #f9f9f9;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      .result-item {
+        margin-top: 10px;
+        font-weight: bold;
+      }
+
+    </style>
+
+  </head>
+
+  <body>
+    <h1>Tapped Capacitor Calculator</h1>
+    <p class="subtitle">
+      By Joseph Vitko
+    </p>
+    <div class="container">
+      <div class="input-group">
+        <label for="f_o">Fo (khz):</label>
+        <input type="text" id="f_o" name="f_o">
+      </div>
+      <div class="input-group">
+        <label for="bandwidth">Bandwidth (khz):</label>
+        <input type="text" id="bandwidth" name="bandwidth">
+      </div>
+      <div class="input-group">
+        <label for="r_t">Rt (kΩ):</label>
+        <input type="text" id="r_t" name="r_t">
+      </div>
+      <div class="input-group">
+        <label for="r_2">R2 (kΩ):</label>
+        <input type="text" id="r_2" name="r_2">
+      </div>
+      <button type="button" onclick="calculateResult()">Calculate</button>
+
+      <div id="result">
+        <div class="result-item">QT: <span id="result_qt"></span></div>
+        <div class="result-item">L: <span id="result_l"></span></div>
+        <div class="result-item">C1: <span id="result_c1"></span></div>
+        <div class="result-item">C2: <span id="result_c2"></span></div>
+      </div>
+    </div>
+  </body>
+
+</html>
